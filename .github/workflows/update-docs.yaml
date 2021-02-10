@@ -40,8 +40,6 @@ jobs:
           name: chart-versions
 
       - name: look at the chart-versions.json File
-        env:
-          GITHUB_TOKEN: ${{ secrets.deploy_token }}
         run: | 
           ls -al
           cat chart-versions.json
