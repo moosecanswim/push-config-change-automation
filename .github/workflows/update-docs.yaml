@@ -95,18 +95,23 @@ jobs:
 
           SHORT_DATE="$(date +"%Y-%m-%d")"
           BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
-          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}"
+          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-$(date '+%d%m%Y%H%M%S')"
 
           echo "${NEW_FEATURE_BRANCH_NAME}"
 
 
           git checkout -b ${NEW_FEATURE_BRANCH_NAME}
 
+          commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
+
           git remote -v 
           git remote set-url origin  https://$GITHUB_USER:${{ secrets.deploy_token }}@github.com/moosecanswim/test-config-change-automation.git
           git add book.json
-          git commit -m "${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
+          git commit -m \"${commit_message}\"
           
-          git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+          git push ${NEW_FEATURE_BRANCH_NAME}
+          if [[ $? != 0 ]];then
+            git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+          fi
 
-          hub pull-request --no-edits
+          hub pull-request -m \"${commit_message}\"
