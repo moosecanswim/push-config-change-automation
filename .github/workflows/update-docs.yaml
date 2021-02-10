@@ -40,6 +40,8 @@ jobs:
           name: chart-versions
 
       - name: look at the chart-versions.json File
+        env:
+          GITHUB_TOKEN: ${{ secrets.deploy_token }}
         run: | 
           ls -al
           cat chart-versions.json
@@ -114,4 +116,6 @@ jobs:
 
           # git request-pull ${NEW_FEATURE_BRANCH_NAME} https://github.com/moosecanswim/test-config-change-automation.git main
 
+
+          gh auth login
           gh pr create
