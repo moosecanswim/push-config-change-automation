@@ -84,6 +84,7 @@ jobs:
 
           cat book.json
           
+          set -xe
           BRANCH_NAME=$(cat ${GITHUB_REF}| awk -F/ '{print $4}')
           NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}"
 
