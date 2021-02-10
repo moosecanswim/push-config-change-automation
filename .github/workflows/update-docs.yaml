@@ -102,4 +102,4 @@ jobs:
           git add book.json
           git commit -m "${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
           
-          git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+          git push --set-upstream upstream ${NEW_FEATURE_BRANCH_NAME}
