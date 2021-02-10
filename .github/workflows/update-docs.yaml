@@ -96,7 +96,8 @@ jobs:
 
           git checkout -b ${NEW_FEATURE_BRANCH_NAME}
 
-          git remote set-url origin  https://github.com/moosecanswim/test-config-change-automation.git
+          git remote -v 
+          # git remote set-url origin  https://github.com/moosecanswim/test-config-change-automation.git
 
           git add book.json
           git commit -m "${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
