@@ -108,3 +108,5 @@ jobs:
           git commit -m "${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
           
           git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+
+          hub pull-request --no-edits
