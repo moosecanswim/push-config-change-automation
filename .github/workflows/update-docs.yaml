@@ -112,4 +112,4 @@ jobs:
           git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
 
-          git request-pull ${NEW_FEATURE_BRANCH_NAME} https://github.com/moosecanswim/test-config-change-automation.git master
+          git request-pull ${NEW_FEATURE_BRANCH_NAME} https://github.com/moosecanswim/test-config-change-automation.git main
