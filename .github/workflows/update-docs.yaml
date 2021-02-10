@@ -83,8 +83,9 @@ jobs:
           sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\"|" book.json
 
           cat book.json
-
-          NEW_FEATURE_BRANCH_NAME="chart-increment/${GITHUB_REF}"
+          
+          BRANCH_NAME=$(cat ${GITHUB_REF}| awk -F/ '{print $4}')
+          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}"
 
           echo "${NEW_FEATURE_BRANCH_NAME}"
           
