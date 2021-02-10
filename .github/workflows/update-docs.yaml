@@ -21,13 +21,6 @@ jobs:
         with:
           name: chart-versions
           path: chart-versions.json
-        # run: |
-        #   echo "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')" >> $GITHUB_ENV
-        #   echo "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')" >> $GITHUB_ENV
-        #   echo "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')" >> $GITHUB_ENV
-        #   echo "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')" >> $GITHUB_ENV
-        #   echo "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')" >> $GITHUB_ENV
-        #   echo "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')" >> $GITHUB_ENV
   
   create_pr:
     name: Create PR to update book.json with new values
@@ -43,7 +36,7 @@ jobs:
         run: | 
           TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
 
-          cat chart-versions.json
+          # set the envars from the prior steps info
           export "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')"
           export "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')"
           export "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')"
@@ -63,55 +56,32 @@ jobs:
 
           # ------------Buissness logic---------------------
 
-          echo "Printing exported chart versions"
-          echo "FABRIC_VERSION: $FABRIC_VERSION"
-          echo "SENSE_VERSION: $SENSE_VERSION"
-          echo "EDGE_VERSION: $EDGE_VERSION"
-          echo "SECRETS_VERSION: $SECRETS_VERSION"
-          echo "SPIRE_AGENT_VERSION: $SPIRE_AGENT_VERSION"
-          echo "SPIRE_SERVER_VERSION: $SPIRE_SERVER_VERSION"
-
-
-          ls -al
-
-          cat book.json
-
           # update book.json with the latest versions
           sed -i -e "s|\"fabric\":.*|\"fabric\": \"$FABRIC_VERSION\",|" book.json
           sed -i -e "s|\"sense\":.*|\"sense\": \"$SENSE_VERSION\",|" book.json
           sed -i -e "s|\"edge\":.*|\"edge\": \"$EDGE_VERSION\",|" book.json
           sed -i -e "s|\"secrets\":.*|\"secrets\": \"$SECRETS_VERSION\",|" book.json
           sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$SPIRE_AGENT_VERSION\",|" book.json
-          
           # this is the last one in book.json so there is not comma
           sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\"|" book.json
 
+          echo "The new book.json: "
           cat book.json
-          
 
           # ------------Git logic---------------------
 
-          set -xe
-
           SHORT_DATE="$(date +"%Y-%m-%d")"
+          LONG_DATE="$(date '+%d%m%Y%H%M%S')"
           BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
-          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-$(date '+%d%m%Y%H%M%S')"
-
-          echo "${NEW_FEATURE_BRANCH_NAME}"
-
-
-          git checkout -b ${NEW_FEATURE_BRANCH_NAME}
-
+          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
           commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
-          git remote set-url origin  https://$GITHUB_ACTOR:${{ secrets.deploy_token }}@${TARGET_REPO}
+          git checkout -b ${NEW_FEATURE_BRANCH_NAME}
+          git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
           git add book.json
           git commit -m "${commit_message}"
-          
           git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
-
-          # git request-pull ${NEW_FEATURE_BRANCH_NAME} https://${TARGET_REPO} main
           # This works.  let it be.
           echo "${{ secrets.deploy_token }}" > token.txt
           gh auth login --with-token < token.txt
