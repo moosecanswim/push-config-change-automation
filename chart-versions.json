@@ -1,0 +1,8 @@
+{
+    "fabric": "9.1.1",
+    "sense": "9.1.1",
+    "edge": "9.1.1",
+    "secrets": "9.1.1",
+    "spire_agent": "9.1.1",
+    "spire_server": "9.1.1"
+}

@@ -16,6 +16,15 @@ jobs:
         run: |
           jq --version
 
+      - name: Export chart versions
+        run: |
+          export FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')
+          export SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')
+          export EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')
+          export SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')
+          export SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')
+          export SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')
+
       - name: Pull in File to update
         run: |
           # setup git details
@@ -28,7 +37,18 @@ jobs:
           
           cd test-config-change-automation
           
+          echo "Printing exported chart versions"
+          echo "FABRIC_VERSION: $FABRIC_VERSION"
+          echo "SENSE_VERSION: $SENSE_VERSION"
+          echo "EDGE_VERSION: $EDGE_VERSION"
+          echo "SECRETS_VERSION: $SECRETS_VERSION"
+          echo "SPIRE_AGENT_VERSION: $SPIRE_AGENT_VERSION"
+          echo "SPIRE_SERVER_VERSION: $SPIRE_SERVER_VERSION"
+
+
           ls -al
+
+          cat book.json
           
           # cd target
           # # do a sed to update shit in target
