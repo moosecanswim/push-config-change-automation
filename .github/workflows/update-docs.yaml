@@ -38,11 +38,17 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: chart-versions
-          
+
       - name: look at the chart-versions.json File
         run: | 
           ls -al
           cat chart-versions.json
+          export "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')"
+          export "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')"
+          export "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')"
+          export "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')"
+          export "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')"
+          export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
 
       - name: Pull in Remote File to update
         run: |
