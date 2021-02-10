@@ -7,7 +7,7 @@ on:
       - actions
 
 jobs:
-  export-chartversions:
+  export-chart-versions:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,12 +18,12 @@ jobs:
 
       - name: Export chart versions
         run: |
-          export FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')
-          export SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')
-          export EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')
-          export SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')
-          export SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')
-          export SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')
+          ::set-env FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')
+          ::set-env SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')
+          ::set-env EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')
+          ::set-env SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')
+          ::set-env SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')
+          ::set-env SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')
   
   create_pr:
     name: Create PR to update book.json with new values
