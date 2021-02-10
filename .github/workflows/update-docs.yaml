@@ -107,11 +107,11 @@ jobs:
           git remote -v 
           git remote set-url origin  https://$GITHUB_USER:${{ secrets.deploy_token }}@github.com/moosecanswim/test-config-change-automation.git
           git add book.json
-          git commit -m \"${commit_message}\"
+          git commit -m "${commit_message}"
           
           git push ${NEW_FEATURE_BRANCH_NAME}
           if [[ $? != 0 ]];then
             git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
           fi
 
-          hub pull-request -m \"${commit_message}\"
+          hub pull-request -m "${commit_message}"
