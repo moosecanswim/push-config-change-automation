@@ -17,20 +17,34 @@ jobs:
         run: git fetch --prune --unshallow
 
       - name: Export chart versions
-        run: |
-          echo "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')" >> $GITHUB_ENV
-          echo "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')" >> $GITHUB_ENV
-          echo "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')" >> $GITHUB_ENV
-          echo "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')" >> $GITHUB_ENV
-          echo "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')" >> $GITHUB_ENV
-          echo "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')" >> $GITHUB_ENV
+        uses: actions/upload-artifact@v2
+        with:
+          name: chart-versions
+          path: chart-versions.json
+        # run: |
+        #   echo "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')" >> $GITHUB_ENV
+        #   echo "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')" >> $GITHUB_ENV
+        #   echo "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')" >> $GITHUB_ENV
+        #   echo "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')" >> $GITHUB_ENV
+        #   echo "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')" >> $GITHUB_ENV
+        #   echo "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')" >> $GITHUB_ENV
   
   create_pr:
     name: Create PR to update book.json with new values
+    needs: export-chart-versions
     runs-on: ubuntu-latest
     steps:
+      - name: Pull in chart-versions.json
+        uses: actions/download-artifact@v2
+        with:
+          name: chart-versions
+          
+      - name: look at the chart-versions.json File
+        run: | 
+          ls -al
+          cat chart-versions.json
 
-      - name: Pull in File to update
+      - name: Pull in Remote File to update
         run: |
           # setup git details
           export GITHUB_USER=moosecanswim
