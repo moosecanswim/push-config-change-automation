@@ -116,4 +116,4 @@ jobs:
 
           echo "${{ secrets.deploy_token }}" > token.txt
           gh auth login --with-token < token.txt
-          gh pr create
+          gh pr create --fill
