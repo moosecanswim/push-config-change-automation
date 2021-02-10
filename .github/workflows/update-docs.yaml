@@ -18,12 +18,12 @@ jobs:
 
       - name: Export chart versions
         run: |
-          ::set-env FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')
-          ::set-env SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')
-          ::set-env EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')
-          ::set-env SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')
-          ::set-env SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')
-          ::set-env SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')
+          echo "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')" >> $GITHUB_ENV
+          echo "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')" >> $GITHUB_ENV
+          echo "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')" >> $GITHUB_ENV
+          echo "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')" >> $GITHUB_ENV
+          echo "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')" >> $GITHUB_ENV
+          echo "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')" >> $GITHUB_ENV
   
   create_pr:
     name: Create PR to update book.json with new values
