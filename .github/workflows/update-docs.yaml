@@ -58,7 +58,11 @@ jobs:
           git clone -o upstream https://github.com/moosecanswim/test-config-change-automation.git
           
           cd test-config-change-automation
+          git remote add origin https://github.com/moosecanswim/test-config-change-automation.git
           
+
+          # ------------Buissness logic---------------------
+
           echo "Printing exported chart versions"
           echo "FABRIC_VERSION: $FABRIC_VERSION"
           echo "SENSE_VERSION: $SENSE_VERSION"
@@ -85,6 +89,8 @@ jobs:
           cat book.json
           
 
+          # ------------Git logic---------------------
+
           set -xe
 
           SHORT_DATE="$(date +"%Y-%m-%d")"
@@ -97,9 +103,8 @@ jobs:
           git checkout -b ${NEW_FEATURE_BRANCH_NAME}
 
           git remote -v 
-          # git remote set-url origin  https://github.com/moosecanswim/test-config-change-automation.git
-
+          git remote set-url origin  https://$GITHUB_USER:${{ secrets.deploy_token }}@github.com/moosecanswim/test-config-change-automation.git
           git add book.json
           git commit -m "${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
           
-          git push --set-upstream upstream ${NEW_FEATURE_BRANCH_NAME}
+          git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
