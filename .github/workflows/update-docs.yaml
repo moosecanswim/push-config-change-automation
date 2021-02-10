@@ -54,7 +54,6 @@ jobs:
           export GITHUB_USER=moosecanswim
           git config --global user.email "62956126+vwadbot@users.noreply.github.com"
           git config --global user.name $GITHUB_USER
-          echo $BRANCH_STAMP
 
           git clone -o upstream https://github.com/moosecanswim/test-config-change-automation.git
           
@@ -84,6 +83,10 @@ jobs:
           sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\"|" book.json
 
           cat book.json
+
+          NEW_FEATURE_BRANCH_NAME="chart-increment/${GITHUB_REF}"
+
+          echo "${NEW_FEATURE_BRANCH_NAME}"
           
           # cd target
           # # do a sed to update shit in target
