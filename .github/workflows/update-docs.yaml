@@ -117,5 +117,5 @@ jobs:
           # git request-pull ${NEW_FEATURE_BRANCH_NAME} https://github.com/moosecanswim/test-config-change-automation.git main
 
 
-          gh auth login
+          gh auth login --with-token < ${{ secrets.deploy_token }}
           gh pr create
