@@ -85,6 +85,8 @@ jobs:
           cat book.json
           
 
+          set -xe
+
           SHORT_DATE="$(date +"%Y-%m-%d")"
           BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
           NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}"
