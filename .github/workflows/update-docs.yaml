@@ -34,7 +34,7 @@ jobs:
     needs: export-chart-versions
     runs-on: ubuntu-latest
     steps:
-      - name: Pull in chart-versions.json
+      - name: Pull in chart-versions.json from prior step
         uses: actions/download-artifact@v2
         with:
           name: chart-versions
@@ -70,6 +70,16 @@ jobs:
 
 
           ls -al
+
+          cat book.json
+
+          # update book.json with the latest versions
+          sed -i -e "s|\"fabric\":.*|\"fabric\": \"$FABRIC_VERSION\",|" book.json
+          sed -i -e "s|\"sense\":.*|\"sense\": \"$SENSE_VERSION\",|" book.json
+          sed -i -e "s|\"edge\":.*|\"edge\": \"$EDGE_VERSION\",|" book.json
+          sed -i -e "s|\"secrets\":.*|\"secrets\": \"$SECRETS_VERSION\",|" book.json
+          sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$SPIRE_AGENT_VERSION\",|" book.json
+          sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\",|" book.json
 
           cat book.json
           
