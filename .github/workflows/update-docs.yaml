@@ -109,9 +109,7 @@ jobs:
           git add book.json
           git commit -m "${commit_message}"
           
-          git push ${NEW_FEATURE_BRANCH_NAME}
-          if [[ $? != 0 ]];then
-            git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
-          fi
+          git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+
 
           hub pull-request -m "${commit_message}"
