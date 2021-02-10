@@ -50,8 +50,6 @@ jobs:
           export "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')"
           export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
 
-      # - name: Pull in Remote File to update
-      #   run: |
           # setup git details
           export GITHUB_USER=moosecanswim
           git config --global user.email "62956126+vwadbot@users.noreply.github.com"
