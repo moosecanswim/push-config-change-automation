@@ -79,7 +79,9 @@ jobs:
           sed -i -e "s|\"edge\":.*|\"edge\": \"$EDGE_VERSION\",|" book.json
           sed -i -e "s|\"secrets\":.*|\"secrets\": \"$SECRETS_VERSION\",|" book.json
           sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$SPIRE_AGENT_VERSION\",|" book.json
-          sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\",|" book.json
+          
+          # this is the last one in book.json so there is not comma
+          sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\"|" book.json
 
           cat book.json
           
