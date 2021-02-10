@@ -52,7 +52,7 @@ jobs:
 
           # setup git details
           export GITHUB_USER=moosecanswim
-          git config --global user.email "62956126+vwadbot@users.noreply.github.com"
+          git config --global user.email "62956126+helm-charts@users.noreply.github.com"
           git config --global user.name $GITHUB_USER
 
           git clone -o upstream https://github.com/moosecanswim/test-config-change-automation.git
@@ -112,4 +112,4 @@ jobs:
           git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
 
-          hub pull-request -m "${commit_message}"
+          git request-pull ${NEW_FEATURE_BRANCH_NAME} https://github.com/moosecanswim/test-config-change-automation.git master
