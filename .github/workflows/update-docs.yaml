@@ -41,7 +41,8 @@ jobs:
 
       - name: look at the chart-versions.json File
         run: | 
-          ls -al
+          TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
+
           cat chart-versions.json
           export "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')"
           export "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')"
@@ -51,14 +52,13 @@ jobs:
           export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
 
           # setup git details
-          export GITHUB_USER=moosecanswim
           git config --global user.email "62956126+helm-charts@users.noreply.github.com"
-          git config --global user.name $GITHUB_USER
+          git config --global user.name $GITHUB_ACTOR
 
-          git clone -o upstream https://github.com/moosecanswim/test-config-change-automation.git
+          git clone -o upstream https://${TARGET_REPO}
           
           cd test-config-change-automation
-          git remote add origin https://github.com/moosecanswim/test-config-change-automation.git
+          git remote add origin https://${TARGET_REPO}
           
 
           # ------------Buissness logic---------------------
@@ -104,16 +104,15 @@ jobs:
 
           commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
-          git remote -v 
-          git remote set-url origin  https://$GITHUB_USER:${{ secrets.deploy_token }}@github.com/moosecanswim/test-config-change-automation.git
+          git remote set-url origin  https://$GITHUB_ACTOR:${{ secrets.deploy_token }}@${TARGET_REPO}
           git add book.json
           git commit -m "${commit_message}"
           
           git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
 
-          # git request-pull ${NEW_FEATURE_BRANCH_NAME} https://github.com/moosecanswim/test-config-change-automation.git main
-
+          # git request-pull ${NEW_FEATURE_BRANCH_NAME} https://${TARGET_REPO} main
+          # This works.  let it be.
           echo "${{ secrets.deploy_token }}" > token.txt
           gh auth login --with-token < token.txt
           gh pr create --fill
