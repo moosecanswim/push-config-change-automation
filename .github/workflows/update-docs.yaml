@@ -23,11 +23,16 @@ jobs:
         id: install-helm
 
       - name: Get current latest helm releases and build chart-versions.json
+        env:
+          REPO_NAME: greymatter
+          REPO_URL: https://greymatter-io.github.io/helm-charts
         run: |
-          helm repo add greymatter https://greymatter-io.github.io/helm-charts
+          helm repo add $REPO_NAME $REPO_URL
           helm repo update
-          helm search repo greymatter/ -o json | jq '.[] | {(.name): (.version)}' | jq -n '[inputs] | add' >> chart-versions.json
-          sed -i -e 's/greymatter\///g' chart-versions.json
+
+          # Note: this pulls in all charts hosted at the "greymatter" repo we just added
+          helm search repo $REPO_NAME/ -o json | jq '.[] | {(.name): (.version)}' | jq -n '[inputs] | add' >> chart-versions.json
+          sed -i -e "s/$REPO_NAME\///g" chart-versions.json
           sed -i -e 's/agent/spire_agent/g' chart-versions.json
           sed -i -e 's/server/spire_server/g' chart-versions.json
           cat chart-versions.json
@@ -48,11 +53,11 @@ jobs:
         with:
           name: chart-versions
 
-      - name: look at the chart-versions.json File
+      - name: Update book.json and push to gitbook
         run: | 
-          TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
+          
 
-          # set the envars from the prior steps info
+          # ------------Source Desired Envvars from chart-versions artifact ---------------------
           export "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')"
           export "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')"
           export "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')"
@@ -60,9 +65,16 @@ jobs:
           export "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')"
           export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
 
-          # setup git details
+          # ------------Set up Git and Git Variables ---------------------
+          TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
           git config --global user.email "62956126+helm-charts@users.noreply.github.com"
           git config --global user.name $GITHUB_ACTOR
+          
+          SHORT_DATE="$(date +"%Y-%m-%d")"
+          LONG_DATE="$(date '+%d%m%Y%H%M%S')"
+          BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
+          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
+          commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
           git clone -o upstream https://${TARGET_REPO}
           
@@ -87,18 +99,8 @@ jobs:
           cat book.json
 
           diff old-book.json book.json
-          diff_result=$?
-          echo "Diff-result is: ${diff_result}"
-          if [[ $diff_result -gt 0 ]]; then
+          if [[ $? -gt 0 ]]; then
             # ------------Git logic---------------------
-
-            SHORT_DATE="$(date +"%Y-%m-%d")"
-            LONG_DATE="$(date '+%d%m%Y%H%M%S')"
-            BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
-            NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
-            commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
-
-            set -xe
 
             git checkout -b ${NEW_FEATURE_BRANCH_NAME}
             git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
