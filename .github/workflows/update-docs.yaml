@@ -23,7 +23,7 @@ jobs:
 
       - name: Get current latest helm releases and build chart-versions.json
         run: |
-          helm repo add https://greymatter-io.github.io/helm-charts
+          helm repo add greymatter https://greymatter-io.github.io/helm-charts
           helm repo update
           helm search repo greymatter/ -o json | jq '.[] | {(.name): (.version)}' | jq -n '[inputs] | add' >> chart-versions.json
           sed -i -e 's/greymatter\///g' chart-versions.json
