@@ -1,5 +1,7 @@
 # push-config-change-automation
 
+This repo provides a method to update another repos `book.json` based on values sourced from a helm repo search.  When there this action is run it will get the latest non dev helm versions from a specified repo and will then map those to a given book.json.  These are then pushed to a new branch on the target repo and a pr is opened.
+
 <!-- TOC -->
 
 - [push-config-change-automation](#push-config-change-automation)
