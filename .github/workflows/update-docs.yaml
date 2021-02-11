@@ -97,7 +97,7 @@ jobs:
 
           echo "The new book.json: "
           cat book.json
-
+          set -x
           r=$(diff old-book.json book.json) || true
           echo "$r"
           if [[ $r -gt 0 ]]; then
