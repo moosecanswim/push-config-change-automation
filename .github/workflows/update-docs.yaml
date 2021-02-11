@@ -68,7 +68,6 @@ jobs:
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
           IFS=', ' read -r -a cts <<< "${CHARTS}"
           for i in ${cts[@]};do
-              echo ${i}
               export "${i}=$(cat chart-versions.json | jq -r --arg input ${i} '.[$input]')"
           done
 
