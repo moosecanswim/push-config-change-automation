@@ -98,8 +98,9 @@ jobs:
           echo "The new book.json: "
           cat book.json
 
-          diff old-book.json book.json || true
-          if [[ $? -gt 0 ]]; then
+          r=$(diff old-book.json book.json) || true
+          echo "$r"
+          if [[ $r -gt 0 ]]; then
             # ------------Git logic---------------------
 
             git checkout -b ${NEW_FEATURE_BRANCH_NAME}
