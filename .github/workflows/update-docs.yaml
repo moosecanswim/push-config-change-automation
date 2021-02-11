@@ -56,6 +56,7 @@ jobs:
       - name: Update book.json and push to gitbook
         env:
           DEPLOY_TOKEN: ${{ secrets.deploy_token }}
+          TARGET_REPO: "github.com/moosecanswim/test-config-change-automation.git"
         run: | 
           # #### If in the future we have different chart names just add them to the cts array
           # #### The cts array is what is used to export envars which are used for the sed command
@@ -70,7 +71,6 @@ jobs:
           done
 
           # ------------Set up Git and Git Variables ---------------------
-          TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
           git config --global user.email "62956126+helm-charts@users.noreply.github.com"
           git config --global user.name $GITHUB_ACTOR
           
