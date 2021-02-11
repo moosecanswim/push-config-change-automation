@@ -16,6 +16,21 @@ jobs:
       - name: Fetch history
         run: git fetch --prune --unshallow
 
+      # Install Helm for dependencies
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        id: install-helm
+
+      - name: Get current latest helm releases and build chart-versions.json
+        run: |
+          helm repo add https://greymatter-io.github.io/helm-charts
+          helm repo update
+          helm search repo greymatter/ -o json | jq '.[] | {(.name): (.version)}' | jq -n '[inputs] | add' >> chart-versions.json
+          sed -i -e 's/greymatter\///g' chart-versions.json
+          sed -i -e 's/agent/spire_agent/g' chart-versions.json
+          sed -i -e 's/server/spire_server/g' chart-versions.json
+          cat chart-versions.json
+
       - name: Export chart versions
         uses: actions/upload-artifact@v2
         with:
