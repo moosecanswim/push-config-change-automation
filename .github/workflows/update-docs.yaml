@@ -58,12 +58,12 @@ jobs:
           
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
-          export "FABRIC_VERSION=$(cat chart-versions.json | jq -r '.fabric')"
-          export "SENSE_VERSION=$(cat chart-versions.json | jq -r '.sense')"
-          export "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')"
-          export "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')"
-          export "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')"
-          export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
+          export "fabric=$(cat chart-versions.json | jq -r '.fabric')"
+          export "sense=$(cat chart-versions.json | jq -r '.sense')"
+          export "edge=$(cat chart-versions.json | jq -r '.edge')"
+          export "secrets=$(cat chart-versions.json | jq -r '.secrets')"
+          export "spire_agent=$(cat chart-versions.json | jq -r '.spire_agent')"
+          export "spire_server=$(cat chart-versions.json | jq -r '.spire_server')"
 
           # ------------Set up Git and Git Variables ---------------------
           TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
@@ -87,13 +87,13 @@ jobs:
           cp book.json old-book.json
 
           # update book.json with the latest versions
-          sed -i -e "s|\"fabric\":.*|\"fabric\": \"$FABRIC_VERSION\",|" book.json
-          sed -i -e "s|\"sense\":.*|\"sense\": \"$SENSE_VERSION\",|" book.json
-          sed -i -e "s|\"edge\":.*|\"edge\": \"$EDGE_VERSION\",|" book.json
-          sed -i -e "s|\"secrets\":.*|\"secrets\": \"$SECRETS_VERSION\",|" book.json
-          sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$SPIRE_AGENT_VERSION\",|" book.json
+          sed -i -e "s|\"fabric\":.*|\"fabric\": \"$fabric\",|" book.json
+          sed -i -e "s|\"sense\":.*|\"sense\": \"$sense\",|" book.json
+          sed -i -e "s|\"edge\":.*|\"edge\": \"$edge\",|" book.json
+          sed -i -e "s|\"secrets\":.*|\"secrets\": \"$secrets\",|" book.json
+          sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$spire_agent\",|" book.json
           # this is the last one in book.json so there is not comma
-          sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$SPIRE_SERVER_VERSION\"|" book.json
+          sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$spire_server\"|" book.json
 
           echo "The new book.json: "
           cat book.json
