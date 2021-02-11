@@ -58,12 +58,18 @@ jobs:
           
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
-          export "fabric=$(cat chart-versions.json | jq -r '.fabric')"
-          export "sense=$(cat chart-versions.json | jq -r '.sense')"
-          export "edge=$(cat chart-versions.json | jq -r '.edge')"
-          export "secrets=$(cat chart-versions.json | jq -r '.secrets')"
-          export "spire_agent=$(cat chart-versions.json | jq -r '.spire_agent')"
-          export "spire_server=$(cat chart-versions.json | jq -r '.spire_server')"
+          # export "fabric=$(cat chart-versions.json | jq -r '.fabric')"
+          # export "sense=$(cat chart-versions.json | jq -r '.sense')"
+          # export "edge=$(cat chart-versions.json | jq -r '.edge')"
+          # export "secrets=$(cat chart-versions.json | jq -r '.secrets')"
+          # export "spire_agent=$(cat chart-versions.json | jq -r '.spire_agent')"
+          # export "spire_server=$(cat chart-versions.json | jq -r '.spire_server')"
+
+          cts=( fabric sense edge secrets spire_agent spire_server )
+          for i in ${cts[@]};do
+              echo ${i}
+              export "${i}=$(cat chart-versions.json | jq -r --arg input ${i} '.[$input]')"
+          done
 
           # ------------Set up Git and Git Variables ---------------------
           TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
