@@ -69,7 +69,7 @@ jobs:
           git remote add origin https://${TARGET_REPO}
           
 
-          # ------------Buissness logic---------------------
+          # ------------Business logic---------------------
 
           # update book.json with the latest versions
           sed -i -e "s|\"fabric\":.*|\"fabric\": \"$FABRIC_VERSION\",|" book.json
@@ -95,9 +95,14 @@ jobs:
           git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
           git add book.json
           git commit -m "${commit_message}"
-          git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+          if [[ $? -eq 0 ]]; then
+            echo "The chart versions have changed. so we will be creating a pr"
+            git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
-          # This works.  let it be.
-          echo "${{ secrets.deploy_token }}" > token.txt
-          gh auth login --with-token < token.txt
-          gh pr create --fill
+            # This works.  let it be.
+            echo "${{ secrets.deploy_token }}" > token.txt
+            gh auth login --with-token < token.txt
+            gh pr create --fill
+          else
+            "There have not been any changes to the versions so we will not update the mesh"
+          fi
