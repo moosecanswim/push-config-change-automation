@@ -97,6 +97,7 @@ jobs:
           git checkout -b ${NEW_FEATURE_BRANCH_NAME}
           git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
           git add book.json
+          
           resp=$?
           echo "**Git add resp is: $resp"
           a=$(git commit -m "${commit_message}")
