@@ -63,7 +63,7 @@ jobs:
           export "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')"
           export "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')"
           export "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')"
-          export "SPIRE_SERVER_VERSION=9.9.9"
+          export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
 
           # ------------Set up Git and Git Variables ---------------------
           TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
