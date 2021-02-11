@@ -58,13 +58,6 @@ jobs:
           
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
-          # export "fabric=$(cat chart-versions.json | jq -r '.fabric')"
-          # export "sense=$(cat chart-versions.json | jq -r '.sense')"
-          # export "edge=$(cat chart-versions.json | jq -r '.edge')"
-          # export "secrets=$(cat chart-versions.json | jq -r '.secrets')"
-          # export "spire_agent=$(cat chart-versions.json | jq -r '.spire_agent')"
-          # export "spire_server=$(cat chart-versions.json | jq -r '.spire_server')"
-
           cts=( fabric sense edge secrets spire_agent spire_server )
           for i in ${cts[@]};do
               echo ${i}
@@ -93,13 +86,30 @@ jobs:
           cp book.json old-book.json
 
           # update book.json with the latest versions
-          sed -i -e "s|\"fabric\":.*|\"fabric\": \"$fabric\",|" book.json
-          sed -i -e "s|\"sense\":.*|\"sense\": \"$sense\",|" book.json
-          sed -i -e "s|\"edge\":.*|\"edge\": \"$edge\",|" book.json
-          sed -i -e "s|\"secrets\":.*|\"secrets\": \"$secrets\",|" book.json
-          sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$spire_agent\",|" book.json
-          # this is the last one in book.json so there is not comma
-          sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$spire_server\"|" book.json
+          # sed -i -e "s|\"fabric\":.*|\"fabric\": \"$fabric\",|" book.json
+          # sed -i -e "s|\"sense\":.*|\"sense\": \"$sense\",|" book.json
+          # sed -i -e "s|\"edge\":.*|\"edge\": \"$edge\",|" book.json
+          # sed -i -e "s|\"secrets\":.*|\"secrets\": \"$secrets\",|" book.json
+          # sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$spire_agent\",|" book.json
+          # # this is the last one in book.json so there is not comma
+          # sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$spire_server\"|" book.json
+          
+          length=${#cts[@]}
+          count=1
+          for i in ${cts[@]};do
+              echo "[${count}/${length}]"
+              # echo ${i}
+              echo "envar of ${i} is ${!i}"
+              if [[ $count -lt $length ]]; then
+                  sed -i -e "s|\"${i}\":.*|\"${i}\": \"${!i}\",|" book.json
+              else
+                  sed -i -e "s|\"${i}\":.*|\"${i}\": \"${!i}\"|" book.json
+              fi
+              count=$((count +1))
+          done
+
+          echo "The old book.json: "
+          cat old-book.json
 
           echo "The new book.json: "
           cat book.json
