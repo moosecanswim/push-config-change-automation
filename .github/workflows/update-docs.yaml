@@ -91,6 +91,8 @@ jobs:
           NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
           commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
+          set -xe
+
           git checkout -b ${NEW_FEATURE_BRANCH_NAME}
           git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
           git add book.json
