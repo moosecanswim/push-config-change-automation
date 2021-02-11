@@ -100,7 +100,7 @@ jobs:
           set -x
           r=$(diff old-book.json book.json) || true
           echo "$r"
-          if [[ $r -gt 0 ]]; then
+          if [[ ! -z $r ]]; then
             # ------------Git logic---------------------
 
             git checkout -b ${NEW_FEATURE_BRANCH_NAME}
