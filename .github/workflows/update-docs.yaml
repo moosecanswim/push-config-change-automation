@@ -61,7 +61,7 @@ jobs:
           # #### The cts array is what is used to export envars which are used for the sed command
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
-          cts=( fabric sense edge secrets spire_agent spire_server )
+          cts=( fabric sense edge secrets spire_agent spire_server data )
           for i in ${cts[@]};do
               echo ${i}
               export "${i}=$(cat chart-versions.json | jq -r --arg input ${i} '.[$input]')"
