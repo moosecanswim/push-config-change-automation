@@ -7,7 +7,8 @@ on:
       - actions
 
 jobs:
-  export-chart-versions:
+  get-current-chart-release-versions:
+    name: Get current helm chart release versions
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +40,7 @@ jobs:
   
   create_pr:
     name: Create PR to update book.json with new values
-    needs: export-chart-versions
+    needs: get-current-chart-release-versions
     runs-on: ubuntu-latest
     steps:
       - name: Pull in chart-versions.json from prior step
@@ -96,8 +97,12 @@ jobs:
           git checkout -b ${NEW_FEATURE_BRANCH_NAME}
           git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
           git add book.json
-          git commit -m "${commit_message}"
-          if [[ $? -eq 0 ]]; then
+          resp=$?
+          echo "**Git add resp is: $resp"
+          a=$(git commit -m "${commit_message}")
+          resp=$?
+          echo "**Git commit resp is: $resp"
+          if [[ $resp -eq 0 ]]; then
             echo "The chart versions have changed. so we will be creating a pr"
             git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
