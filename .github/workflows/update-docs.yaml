@@ -63,7 +63,7 @@ jobs:
           export "EDGE_VERSION=$(cat chart-versions.json | jq -r '.edge')"
           export "SECRETS_VERSION=$(cat chart-versions.json | jq -r '.secrets')"
           export "SPIRE_AGENT_VERSION=$(cat chart-versions.json | jq -r '.spire_agent')"
-          export "SPIRE_SERVER_VERSION=$(cat chart-versions.json | jq -r '.spire_server')"
+          export "SPIRE_SERVER_VERSION=9.9.9"
 
           # ------------Set up Git and Git Variables ---------------------
           TARGET_REPO=github.com/moosecanswim/test-config-change-automation.git
@@ -98,7 +98,7 @@ jobs:
           echo "The new book.json: "
           cat book.json
 
-          diff old-book.json book.json
+          diff old-book.json book.json || true
           if [[ $? -gt 0 ]]; then
             # ------------Git logic---------------------
 
