@@ -59,9 +59,11 @@ jobs:
         run: | 
           # #### If in the future we have different chart names just add them to the cts array
           # #### The cts array is what is used to export envars which are used for the sed command
+          # #### These keys must match an already existing key in book.json.  Keys that do not exist
+          # #### will be processed but they will be reflected in any prs to gitbook.
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
-          cts=( fabric sense edge secrets spire_agent spire_server data )
+          cts=( fabric sense edge secrets spire_agent spire_server )
           for i in ${cts[@]};do
               echo ${i}
               export "${i}=$(cat chart-versions.json | jq -r --arg input ${i} '.[$input]')"
