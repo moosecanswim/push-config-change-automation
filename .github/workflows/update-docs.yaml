@@ -58,14 +58,15 @@ jobs:
           DEPLOY_TOKEN: ${{ secrets.deploy_token }}
           TARGET_REPO: "github.com/moosecanswim/test-config-change-automation.git"
           BRANCH_TO_UPDATE: "main"
+          CHARTS: "fabric sense edge secrets spire_agent spire_server"
         run: | 
-          # #### If in the future we have different chart names just add them to the cts array
-          # #### The cts array is what is used to export envars which are used for the sed command
+          # #### If in the future we have different chart names just add them to the CHARTS environment variable (space separated)
+          # #### The CHARTS environment variable is split into the cts array which is used to export the envars which are used for the sed command
           # #### These keys must match an already existing key in book.json.  Keys that do not exist
           # #### will be processed but they will be reflected in any prs to gitbook.
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
-          cts=( fabric sense edge secrets spire_agent spire_server )
+          IFS=', ' read -r -a cts <<< "${CHARTS}"
           for i in ${cts[@]};do
               echo ${i}
               export "${i}=$(cat chart-versions.json | jq -r --arg input ${i} '.[$input]')"
