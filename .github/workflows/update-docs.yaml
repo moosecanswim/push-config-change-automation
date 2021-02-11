@@ -55,7 +55,8 @@ jobs:
 
       - name: Update book.json and push to gitbook
         run: | 
-          
+          # #### If in the future we have different chart names just add them to the cts array
+          # #### The cts array is what is used to export envars which are used for the sed command
 
           # ------------Source Desired Envvars from chart-versions artifact ---------------------
           cts=( fabric sense edge secrets spire_agent spire_server )
@@ -85,22 +86,11 @@ jobs:
           
           cp book.json old-book.json
 
-          # update book.json with the latest versions
-          # sed -i -e "s|\"fabric\":.*|\"fabric\": \"$fabric\",|" book.json
-          # sed -i -e "s|\"sense\":.*|\"sense\": \"$sense\",|" book.json
-          # sed -i -e "s|\"edge\":.*|\"edge\": \"$edge\",|" book.json
-          # sed -i -e "s|\"secrets\":.*|\"secrets\": \"$secrets\",|" book.json
-          # sed -i -e "s|\"spire_agent\":.*|\"spire_agent\": \"$spire_agent\",|" book.json
-          # # this is the last one in book.json so there is not comma
-          # sed -i -e "s|\"spire_server\":.*|\"spire_server\": \"$spire_server\"|" book.json
-          
-          length=${#cts[@]}
+          # update book.json with the latest versions from envars 
           count=1
           for i in ${cts[@]};do
-              echo "[${count}/${length}]"
-              # echo ${i}
-              echo "envar of ${i} is ${!i}"
-              if [[ $count -lt $length ]]; then
+              echo "[${count}/${#cts[@]}] --- envar of ${i} is ${!i}"
+              if [[ $count -lt ${#cts[@]} ]]; then
                   sed -i -e "s|\"${i}\":.*|\"${i}\": \"${!i}\",|" book.json
               else
                   sed -i -e "s|\"${i}\":.*|\"${i}\": \"${!i}\"|" book.json
