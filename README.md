@@ -8,6 +8,7 @@
     - [get-current-chart-release-versions](#get-current-chart-release-versions)
     - [Create_pr](#create_pr)
   - [Dev Stuff](#dev-stuff)
+    - [Modify Different Branches](#modify-different-branches)
     - [Deploy Token](#deploy-token)
 
 <!-- /TOC -->
@@ -48,6 +49,10 @@ Here is where the super fancy stuff begins.  This job pulls in the destination r
 ## Dev Stuff
 
 Since the first job gets all the charts in the repo we can quickly expand the variables published to gitbook.  To do so, update gitbook with a key, add that key to the `cts` array in the `create_pr` job.  If the chart name matches the variable name in gitbook then you're good; otherwise, you'll need to add a `sed` in the `get-current-chart-release-versions` job to massage the `chart-versions.json` artifact.  If the key is in `cts` but not in gitbook any changes will not be reflected in the destination repo pr.
+
+### Modify Different Branches
+
+If you want to use this workflow with a non default branch then set the `BRANCH_TO_UPDATE` to the desired branch in the `create_pr` job.
 
 ### Deploy Token
 

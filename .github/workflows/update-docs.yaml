@@ -57,7 +57,7 @@ jobs:
         env:
           DEPLOY_TOKEN: ${{ secrets.deploy_token }}
           TARGET_REPO: "github.com/moosecanswim/test-config-change-automation.git"
-          BRANCH_TO_UPDATE: "test-non-default"
+          BRANCH_TO_UPDATE: "main"
         run: | 
           # #### If in the future we have different chart names just add them to the cts array
           # #### The cts array is what is used to export envars which are used for the sed command
