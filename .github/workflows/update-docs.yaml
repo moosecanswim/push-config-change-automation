@@ -57,6 +57,7 @@ jobs:
         env:
           DEPLOY_TOKEN: ${{ secrets.deploy_token }}
           TARGET_REPO: "github.com/moosecanswim/test-config-change-automation.git"
+          BRANCH_TO_UPDATE: "main"
         run: | 
           # #### If in the future we have different chart names just add them to the cts array
           # #### The cts array is what is used to export envars which are used for the sed command
@@ -84,7 +85,7 @@ jobs:
           
           cd test-config-change-automation
           git remote add origin https://${TARGET_REPO}
-          
+          git checkout ${BRANCH_TO_UPDATE}
 
           # ------------Business logic---------------------
           
@@ -125,7 +126,7 @@ jobs:
             # This works.  let it be.
             echo "${DEPLOY_TOKEN}" > token.txt
             gh auth login --with-token < token.txt
-            gh pr create --fill
+            gh pr create --fill -B ${BRANCH_TO_UPDATE}
           else
             echo "There have not been any changes to the versions so we will not update the mesh"
           fi
