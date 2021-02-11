@@ -97,23 +97,25 @@ jobs:
 
           echo "The new book.json: "
           cat book.json
-          set -x
+          
+          # This is ratchet but github actions currently exit on any exit code non 0.  diff responds with 1 if there is a difference
+          # This allows us to capture the event where there are no changes since the diff only returns a string if there is a ... diff
           r=$(diff old-book.json book.json) || true
-          echo "$r"
           if [[ ! -z $r ]]; then
+            echo "The chart versions have changed. so we will be creating a pr"
             # ------------Git logic---------------------
 
             git checkout -b ${NEW_FEATURE_BRANCH_NAME}
             git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
             git add book.json
             git commit -m "${commit_message}"
-              echo "The chart versions have changed. so we will be creating a pr"
-              git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+            
+            git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
-              # This works.  let it be.
-              echo "${{ secrets.deploy_token }}" > token.txt
-              gh auth login --with-token < token.txt
-              gh pr create --fill
-            else
-              echo "There have not been any changes to the versions so we will not update the mesh"
+            # This works.  let it be.
+            echo "${{ secrets.deploy_token }}" > token.txt
+            gh auth login --with-token < token.txt
+            gh pr create --fill
+          else
+            echo "There have not been any changes to the versions so we will not update the mesh"
           fi
