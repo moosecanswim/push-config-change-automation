@@ -71,6 +71,8 @@ jobs:
           
 
           # ------------Business logic---------------------
+          
+          cp book.json old-book.json
 
           # update book.json with the latest versions
           sed -i -e "s|\"fabric\":.*|\"fabric\": \"$FABRIC_VERSION\",|" book.json
@@ -84,33 +86,31 @@ jobs:
           echo "The new book.json: "
           cat book.json
 
-          # ------------Git logic---------------------
+          diff old-book.json book.json
+          diff_result=$?
+          echo "Diff-result is: ${diff_result}"
+          if [[ $diff_result -gt 0 ]]; then
+            # ------------Git logic---------------------
 
-          SHORT_DATE="$(date +"%Y-%m-%d")"
-          LONG_DATE="$(date '+%d%m%Y%H%M%S')"
-          BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
-          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
-          commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
+            SHORT_DATE="$(date +"%Y-%m-%d")"
+            LONG_DATE="$(date '+%d%m%Y%H%M%S')"
+            BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
+            NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
+            commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
-          set -xe
+            set -xe
 
-          git checkout -b ${NEW_FEATURE_BRANCH_NAME}
-          git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
-          git add book.json
-          
-          resp=$?
-          echo "**Git add resp is: $resp"
-          a=$(git commit -m "${commit_message}")
-          resp=$?
-          echo "**Git commit resp is: $resp"
-          if [[ $resp -eq 0 ]]; then
-            echo "The chart versions have changed. so we will be creating a pr"
-            git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+            git checkout -b ${NEW_FEATURE_BRANCH_NAME}
+            git remote set-url origin  https://${GITHUB_ACTOR}:${{ secrets.deploy_token }}@${TARGET_REPO}
+            git add book.json
+            git commit -m "${commit_message}"
+              echo "The chart versions have changed. so we will be creating a pr"
+              git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
-            # This works.  let it be.
-            echo "${{ secrets.deploy_token }}" > token.txt
-            gh auth login --with-token < token.txt
-            gh pr create --fill
-          else
-            "There have not been any changes to the versions so we will not update the mesh"
+              # This works.  let it be.
+              echo "${{ secrets.deploy_token }}" > token.txt
+              gh auth login --with-token < token.txt
+              gh pr create --fill
+            else
+              echo "There have not been any changes to the versions so we will not update the mesh"
           fi
